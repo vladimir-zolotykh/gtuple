@@ -5,14 +5,15 @@ from operator import itemgetter
 import pytest
 
 
-class TupleMeta(type):
-    def __init__(cls, clsname, bases, clsdict):
-        fields = clsdict.get("_fields", [])
+class TupleBase(tuple):
+    def __init_subclass__(cls, *args):
+        super().__init_subclass__(*args)
+        fields = cls._fields if hasattr(cls, "_fields") else []
         for n, field in enumerate(fields):
             setattr(cls, field, property(itemgetter(n)))
 
 
-class Tuple(tuple, metaclass=TupleMeta):
+class Tuple(TupleBase):
     def __new__(cls, *args):
         if hasattr(cls, "_fields") and len(args) != len(cls._fields):
             raise ValueError(f"{cls.__name__} takes {len(cls._fields)} arguments")
@@ -47,8 +48,3 @@ def test_gtuple():
     tup = Tuple(*dat)
     assert tup == dat
     assert (tup[0], tup[1]) == dat
-
-
-if __name__ == "__main__":
-    tup = Tuple("a", "b")
-    print(tup)

@@ -7,7 +7,7 @@ class TupleMeta(type):
     pass
 
 
-class Tuple(metaclass=TupleMeta):
+class Tuple(tuple, metaclass=TupleMeta):
     def __new__(cls, *args):
         return super().__new__(cls, args)
 

@@ -23,6 +23,10 @@ class Point(Tuple):
     _fields = ["x", "y"]
 
 
+class Exercise(Tuple):
+    _fields = ["exercise_name", "weight", "reps"]
+
+
 def test_point():
     p = Point(10, 20)
     assert (p[0], p[1]) == (10, 20)
@@ -30,6 +34,12 @@ def test_point():
     with pytest.raises(ValueError) as err:
         p = Point(10, 20, 30)
     assert str(err.value) == "Tuple takes 2 arguments"
+
+
+def test_exercise():
+    dat = ("squat", 90.0, 3)
+    e = Exercise(*dat)
+    assert (e.exercise_name, e.weight, e.reps) == dat
 
 
 def test_gtuple():

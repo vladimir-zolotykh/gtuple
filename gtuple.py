@@ -1,18 +1,34 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # PYTHON_ARGCOMPLETE_OK
+from operator import itemgetter
 import pytest
 
 
 class TupleMeta(type):
-    pass
+    def __init__(cls, clsname, bases, clsdict):
+        fields = clsdict.get("_fields", [])
+        for n, field in enumerate(fields):
+            setattr(cls, field, property(itemgetter(n)))
 
 
 class Tuple(tuple, metaclass=TupleMeta):
     def __new__(cls, *args):
-        if len(args) != 2:
-            raise ValueError("Tuple takes 2 arguments")
+        if len(args) != len(cls._fields):
+            raise ValueError(f"Tuple takes {len(cls._fields)}  arguments")
         return super().__new__(cls, args)
+
+
+class Point(Tuple):
+    _fields = ["x", "y"]
+
+
+def test_point():
+    p = Point(10, 20)
+    assert (p[0], p[1]) == (10, 20)
+    assert (p.x, p.y) == (10, 20)
+    with pytest.raises(ValueError):
+        p = Point(10, 20, 30)
 
 
 def test_gtuple():

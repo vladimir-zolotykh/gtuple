@@ -15,7 +15,7 @@ class TupleMeta(type):
 class Tuple(tuple, metaclass=TupleMeta):
     def __new__(cls, *args):
         if hasattr(cls, "_fields") and len(args) != len(cls._fields):
-            raise ValueError(f"Tuple takes {len(cls._fields)} arguments")
+            raise ValueError(f"{cls.__name__} takes {len(cls._fields)} arguments")
         return super().__new__(cls, args)
 
 
@@ -33,7 +33,7 @@ def test_point():
     assert (p.x, p.y) == (10, 20)
     with pytest.raises(ValueError) as err:
         p = Point(10, 20, 30)
-    assert str(err.value) == "Tuple takes 2 arguments"
+    assert str(err.value) == "Point takes 2 arguments"
 
 
 def test_exercise():

@@ -48,3 +48,9 @@ def test_gtuple():
     tup = Tuple(*dat)
     assert tup == dat
     assert (tup[0], tup[1]) == dat
+
+
+if __name__ == "__main__":
+    import sys
+
+    pytest.main(sys.argv)

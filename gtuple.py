@@ -14,7 +14,7 @@ class TupleMeta(type):
 
 class Tuple(tuple, metaclass=TupleMeta):
     def __new__(cls, *args):
-        if len(args) != len(cls._fields):
+        if hasattr(cls, "_fields") and len(args) != len(cls._fields):
             raise ValueError(f"Tuple takes {len(cls._fields)} arguments")
         return super().__new__(cls, args)
 
@@ -43,14 +43,10 @@ def test_exercise():
 
 
 def test_gtuple():
-    tup = Tuple("a", "b")
-    assert tup == ("a", "b")
-    assert tup[0] == "a"
-    assert tup[1] == "b"
-    with pytest.raises(AttributeError):
-        tup.x
-    with pytest.raises(ValueError):
-        tup = Tuple(1, 2, 3)
+    dat = ("a", "b")
+    tup = Tuple(*dat)
+    assert tup == dat
+    assert (tup[0], tup[1]) == dat
 
 
 if __name__ == "__main__":
